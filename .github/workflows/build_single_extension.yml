@@ -9,8 +9,12 @@ on:
       extension:
         description: Target extension name
         required: true
+      is-multisrc:
+        description: Is the extension multisrc?
+        default: 'false'
+        required: true
       git-repo:
-        description: Git repo (Optional, defaults to <your name>/aniyomi-extensions
+        description: Git repo (Optional, defaults to <your name>/aniyomi-extensions)
         default: ''
         required: false
       git-ref:
@@ -19,9 +23,10 @@ on:
         required: false
 
 env:
-  EXTPATH: ${{ github.event.inputs.lang }}/${{ github.event.inputs.extension }}
-  EXTSLUG: ${{ github.event.inputs.lang }}:${{ github.event.inputs.extension }}
-  REPO: ${{ github.event.inputs.git-repo }}
+  # Set environment variables for CI and extension path
+  CI: true
+  CI_MATRIX_LANG: ${{ github.event.inputs.lang }}
+  CI_MULTISRC: ${{ github.event.inputs['is-multisrc'] }}
 
 jobs:
   build-extension:
@@ -31,10 +36,13 @@ jobs:
       - name: Check inputs
         run: |
           set -e
-          if [[ -z "${{ env.REPO }}" ]]; then
+          if [[ -z "${{ github.event.inputs.git-repo }}" ]]; then
             echo "REPO=${{ github.repository_owner }}/aniyomi-extensions" >> $GITHUB_ENV
+          else
+            echo "REPO=${{ github.event.inputs.git-repo }}" >> $GITHUB_ENV
           fi
-      - name: Clone Repository (Latest)
+
+      - name: Clone Repository
         uses: actions/checkout@v4
         with:
           repository: ${{ env.REPO }}
@@ -48,13 +56,19 @@ jobs:
           distribution: zulu
 
       - name: Build APK
-        env:
-          CI: false
-        run: ./gradlew -p src ${{ env.EXTSLUG }}:assembleDebug
+        run: |
+          # Determine whether the extension is from multisrc or individual
+          if [[ "${{ env.CI_MULTISRC }}" == "true" ]]; then
+            ./gradlew :extensions:multisrc:${{ github.event.inputs.lang }}:${{ github.event.inputs.extension }}:assembleDebug
+          else
+            ./gradlew :extensions:individual:${{ github.event.inputs.lang }}:${{ github.event.inputs.extension }}:assembleDebug
+          fi
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{github.event.inputs.lang}}-${{ github.event.inputs.extension }}
-          path: "src/${{ env.EXTPATH }}/build/outputs/apk/debug/*.apk"
+          name: ${{ github.event.inputs.lang }}-${{ github.event.inputs.extension }}
+          path: |
+            src/${{ github.event.inputs.lang }}/${{ github.event.inputs.extension }}/build/outputs/apk/debug/*.apk,
+            generated-src/${{ github.event.inputs.lang }}/${{ github.event.inputs.extension }}/build/outputs/apk/debug/*.apk
           retention-days: 1
