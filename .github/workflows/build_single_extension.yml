@@ -2,11 +2,11 @@ name: Build single extension
 
 on:
   workflow_dispatch:
-    inputs:id
+    inputs:
       lang:
         description: Extension language (en, ar, es, pt...)
         required: true
-      extension:bacakomik
+      extension:
         description: Target extension name
         required: true
       git-repo:
