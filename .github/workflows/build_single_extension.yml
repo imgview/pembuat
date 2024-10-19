@@ -3,10 +3,10 @@ name: Build single extension
 on:
   workflow_dispatch:
     inputs:
-      lang:
+      lang:id
         description: Extension language (en, ar, es, pt...)
         required: true
-      extension:
+      extension:bacakomik
         description: Target extension name
         required: true
       git-repo:
