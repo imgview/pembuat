@@ -5,10 +5,12 @@ on:
     inputs:
       lang:
         description: Extension language (en, ar, es, pt...)
-        required: true
+        required: false
+        default: id
       extension:
         description: Target extension name
         required: true
+        default: bacakomik
       git-repo:
         description: Git repo (Optional, defaults to <your name>/aniyomi-extensions
         default: 'imgview/ext'
