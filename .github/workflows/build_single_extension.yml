@@ -10,7 +10,7 @@ on:
       extension:
         description: Target extension name
         required: true
-        default: bacakomik
+        default: shinigamix
       git-repo:
         description: Git repo (Optional, defaults to <your name>/aniyomi-extensions
         default: 'imgview/ext'
