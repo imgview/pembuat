@@ -10,7 +10,7 @@ on:
       extension:
         description: Target extension name
         required: true
-        default: shinigamix
+        default: komikcast
       git-repo:
         description: Git repo (Optional, defaults to <your name>/aniyomi-extensions
         default: 'imgview/ext'
