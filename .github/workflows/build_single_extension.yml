@@ -6,11 +6,11 @@ on:
       lang:
         description: Extension language (en, ar, es, pt...)
         required: false
-        default: en
+        default: id
       extension:
         description: Target extension name
         required: true
-        default: lunarscans
+        default: shinigamix
       git-repo:
         description: Git repo (Optional, defaults to <your name>/aniyomi-extensions
         default: 'imgview/ext'
