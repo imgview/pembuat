@@ -12,7 +12,7 @@ on:
         required: true
       git-repo:
         description: Git repo (Optional, defaults to <your name>/aniyomi-extensions)
-        default: 'SupKelelawar/extensions-source'
+        default: 'imgview/ext'
         required: false
       git-ref:
         description: Git Ref (Optional, defaults to master)
@@ -63,7 +63,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ env.REPO }}
-          ref: 'target-branch'  # Ganti dengan nama branch tujuan tempat ekstraksi file zip
+          ref: 'repo'  # Ganti dengan nama branch tujuan tempat ekstraksi file zip
 
       - name: Create directory for extracted APK files
         run: mkdir -p extracted_apk
